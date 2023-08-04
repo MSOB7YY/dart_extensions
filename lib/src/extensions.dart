@@ -154,8 +154,7 @@ extension DEYearDateFormatted on int {
 
     final parseResult = DateTime.tryParse(toString());
     if (parseResult != null) {
-      final formatDate = DateFormat(newPattern, locale);
-      return formatDate.format(parseResult);
+      return DateFormat(newPattern, locale).format(parseResult);
     }
 
     return toString();
@@ -163,21 +162,9 @@ extension DEYearDateFormatted on int {
 
   String formatTimeFromMSSE(String format) => DateFormat(format).format(DateTime.fromMillisecondsSinceEpoch(this));
 
-  String getDateFormattedOriginal({String format = _kdefaultDateFormat}) => formatTimeFromMSSE(format);
+  String getDateFormatted({String format = _kdefaultDateFormat}) => formatTimeFromMSSE(format);
 
   String getClockFormatted(bool hourFormat12) => formatTimeFromMSSE(hourFormat12 ? 'hh:mm aa' : 'HH:mm');
-
-  /// This one gurantee that the format will return with the day included, even if the format in setting doesnt have day.
-  /// if (valInSet.contains('d')) return defaultFormat;
-  /// else returns [getDateFormattedOriginal] [_kdefaultDateFormat];
-  String getDateAndClockFormattedOriginal({required String defaultFormat, required bool hourFormat12, String fallbackFormat = _kdefaultDateFormat}) {
-    if (defaultFormat.contains('d')) {
-      return getDateAndClockFormatted(format: defaultFormat, hourFormat12: hourFormat12);
-    }
-    return [getDateFormattedOriginal(format: fallbackFormat), getClockFormatted(hourFormat12)].join(' - ');
-  }
-
-  String getDateAndClockFormatted({String format = _kdefaultDateFormat, required bool hourFormat12}) => [getDateFormattedOriginal(), getClockFormatted(hourFormat12)].join(' - ');
 }
 
 extension DEFileSizeFormat on int {
@@ -193,7 +180,7 @@ extension DEFileSizeFormat on int {
 extension DEFileNameUtils on String {
   String get getFilename => p.basename(this);
   String get getFilenameWOExt => p.basenameWithoutExtension(this);
-  String get getextension => p.extension(this).substring(1);
+  String get getExtension => p.extension(this).substring(1);
   String get getDirectoryName => p.dirname(this);
   String get getDirectoryPath => withoutLast(Platform.pathSeparator);
 }
