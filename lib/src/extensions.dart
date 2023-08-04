@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 
-extension SecondsLabel on int {
+extension DESecondsLabel on int {
   String get secondsLabel {
     if (this == 0) return "00:00";
 
@@ -26,7 +26,7 @@ extension SecondsLabel on int {
   String get milliSecondsLabel => (this ~/ 1000).secondsLabel;
 }
 
-extension StringUtilsNull on String? {
+extension DEStringUtilsNull on String? {
   int? getIntValue({bool tryAgainAfterCleaning = true}) {
     final value = this;
     if (value == null) return null;
@@ -47,7 +47,7 @@ extension StringUtilsNull on String? {
   }
 }
 
-extension StringUtils on String {
+extension DEStringUtils on String {
   /// Trims a string and removes all extra white spaces.
   String trimAll() {
     // second time ensures removing extra ones if number of white spaces is odd, for ex:
@@ -93,7 +93,7 @@ extension StringUtils on String {
       .replaceAll(RegExp(r'''[\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\>\=\?\@\[\]\{\}\\\\\^\_\`\~\s\|\@\#\$\%\^\&\*\(\)\-\+\=\[\]\{\}\:\;\"\'\<\>\.\,\?\/\`\~\!\_\s]+'''), '');
 }
 
-extension Iterables<E> on Iterable<E> {
+extension DEIterables<E> on Iterable<E> {
   Map<K, List<E>> groupBy<K>(K Function(E) keyFunction) => fold(
         <K, List<E>>{},
         (Map<K, List<E>> map, E element) => map..putIfAbsent(keyFunction(element), () => <E>[]).add(element),
@@ -104,11 +104,11 @@ extension Iterables<E> on Iterable<E> {
       );
 }
 
-extension MSSEUtils on int? {
+extension DEMSSEUtils on int? {
   DateTime? get milliSecondsSinceEpoch => this == null ? null : DateTime.fromMillisecondsSinceEpoch(this!);
 }
 
-extension TotalTime on int {
+extension DETotalTime on int {
   /// Converts milliSecondsSinceEpoch to DaysSinceEpoch.
   ///
   /// Note: using normal way of getting day doesnt give a shit about local time, this one works just fine.
@@ -138,7 +138,7 @@ extension TotalTime on int {
   }
 }
 
-extension DisplayKeywords on int {
+extension DEDisplayKeywords on int {
   String displayKeyword(String singular, String plural) {
     return '${formatDecimal()} ${this > 1 ? plural : singular}';
   }
@@ -146,7 +146,7 @@ extension DisplayKeywords on int {
 
 const _kdefaultDateFormat = 'dd MMM yyyy';
 
-extension YearDateFormatted on int {
+extension DEYearDateFormatted on int {
   /// converts [yyyyMMdd] or parsable date to [newPattern].
   /// if failed, returns [toString]
   String yearFormatted([String? newPattern, String? locale]) {
@@ -180,7 +180,7 @@ extension YearDateFormatted on int {
   String dateAndClockFormatted({String format = _kdefaultDateFormat, required bool hourFormat12}) => [getDateFormattedOriginal(), getClockFormatted(hourFormat12)].join(' - ');
 }
 
-extension FileSizeFormat on int {
+extension DEFileSizeFormat on int {
   String get fileSizeFormatted {
     const decimals = 2;
     if (this <= 0) return "0 B";
@@ -190,24 +190,24 @@ extension FileSizeFormat on int {
   }
 }
 
-extension FileNameUtils on String {
+extension DEFileNameUtils on String {
   String get getFilename => p.basename(this);
   String get getFilenameWOExt => p.basenameWithoutExtension(this);
-  String get getExtension => p.extension(this).substring(1);
+  String get getextension => p.extension(this).substring(1);
   String get getDirectoryName => p.dirname(this);
   String get getDirectoryPath => withoutLast(Platform.pathSeparator);
 }
 
-extension EnumUtils on Enum {
+extension DEEnumUtils on Enum {
   String get convertToString => toString().split('.').last;
 }
 
-extension FORMATNUMBER on int? {
+extension DEFORMATNUMBER on int? {
   String formatDecimalShort([bool full = false]) => (full ? NumberFormat('#,###,###') : NumberFormat.compact()).format(this);
   String formatDecimal() => NumberFormat('#,###,###').format(this);
 }
 
-extension FileUtils<R> on File {
+extension DEFileUtils<R> on File {
   Future<bool> existsAndValid([int minValidSize = 3]) async {
     final st = await stat();
     final doesExist = await exists();
@@ -324,7 +324,7 @@ extension FileUtils<R> on File {
   }
 }
 
-extension NumberUtils<E extends num> on E {
+extension DENumberUtils<E extends num> on E {
   E withMinimum(E min) {
     if (this < min) return min;
     return this;
@@ -336,13 +336,13 @@ extension NumberUtils<E extends num> on E {
   }
 }
 
-extension IntUtils on int {
+extension DEIntUtils on int {
   int getRandomNumberBelow([int minimum = 0]) {
     return minimum + (math.Random().nextInt(this));
   }
 }
 
-extension MapExtNull<K, E> on Map<K, List<E>?> {
+extension DEMapExtNull<K, E> on Map<K, List<E>?> {
   void addForce(K key, E item) {
     if (keyExists(key)) {
       this[key]!.add(item);
@@ -378,11 +378,11 @@ extension MapExtNull<K, E> on Map<K, List<E>?> {
   }
 }
 
-extension StuffUtils<T> on T {
+extension DEStuffUtils<T> on T {
   T toIf(T convertTo, T ifValueEquals) => this == ifValueEquals ? convertTo : this;
 }
 
-extension SetExt<E, Id> on Set<E> {
+extension DESetExt<E, Id> on Set<E> {
   /// Adds [item] to [this] if it doesn't exist,
   /// or removes [item] if it exists.
   void addOrRemove(E item) {
@@ -393,7 +393,7 @@ extension SetExt<E, Id> on Set<E> {
   }
 }
 
-extension ListieExt<E, Id> on List<E> {
+extension DEListieExt<E, Id> on List<E> {
   /// Adds [item] to [this] if it doesn't exist,
   /// or removes [item] if it exists.
   void addOrRemove(E item) {
@@ -616,14 +616,14 @@ extension ListieExt<E, Id> on List<E> {
   E? get lastOrNull => isEmpty ? null : this[length - 1];
 }
 
-extension IterableUtils<E> on Iterable<E> {
+extension DEIterableUtils<E> on Iterable<E> {
   E? get firstOrNull => isEmpty ? null : first;
   E? get lastOrNull => isEmpty ? null : last;
 
   Iterable<E> withLimit([int? limit]) => limit != null ? take(limit) : this;
 }
 
-extension WidgetsSeparator on Iterable<Widget> {
+extension DEWidgetsSeparator on Iterable<Widget> {
   Iterable<Widget> addSeparators({required Widget separator, int skipFirst = 0}) sync* {
     final iterator = this.iterator;
     int count = 0;
@@ -640,7 +640,7 @@ extension WidgetsSeparator on Iterable<Widget> {
   }
 }
 
-extension MapUtils<K, V> on Map<K, V> {
+extension DEMapUtils<K, V> on Map<K, V> {
   /// [keyExists] : Less accurate but instant, O(1).
   /// Shouldn't be used if the value could be null.
   ///
@@ -648,7 +648,7 @@ extension MapUtils<K, V> on Map<K, V> {
   bool keyExists(K key) => this[key] != null;
 }
 
-extension ExecuteIfBool on bool {
+extension DEExecuteIfBool on bool {
   void executeIfTrue<T>(T Function() execute) {
     if (this) execute();
   }
@@ -658,7 +658,7 @@ extension ExecuteIfBool on bool {
   }
 }
 
-extension PrintFunction on dynamic {
+extension DEPrintFunction on dynamic {
   void printy(dynamic message, {bool isError = false, bool dumpshit = false}) {
     printo(message, isError: isError, classScope: this, dumpshit: dumpshit);
   }
