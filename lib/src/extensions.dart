@@ -149,7 +149,7 @@ const _kdefaultDateFormat = 'dd MMM yyyy';
 extension DEYearDateFormatted on int {
   /// converts [yyyyMMdd] or parsable date to [newPattern].
   /// if failed, returns [toString]
-  String yearFormatted([String? newPattern, String? locale]) {
+  String getYearFormatted([String? newPattern, String? locale]) {
     if (this == 0) return '';
 
     final parseResult = DateTime.tryParse(toString());
@@ -170,14 +170,14 @@ extension DEYearDateFormatted on int {
   /// This one gurantee that the format will return with the day included, even if the format in setting doesnt have day.
   /// if (valInSet.contains('d')) return defaultFormat;
   /// else returns [getDateFormattedOriginal] [_kdefaultDateFormat];
-  String dateAndClockFormattedOriginal({required String defaultFormat, required bool hourFormat12, String fallbackFormat = _kdefaultDateFormat}) {
+  String getDateAndClockFormattedOriginal({required String defaultFormat, required bool hourFormat12, String fallbackFormat = _kdefaultDateFormat}) {
     if (defaultFormat.contains('d')) {
-      return dateAndClockFormatted(hourFormat12: hourFormat12);
+      return getDateAndClockFormatted(hourFormat12: hourFormat12);
     }
     return [getDateFormattedOriginal(format: fallbackFormat), getClockFormatted(hourFormat12)].join(' - ');
   }
 
-  String dateAndClockFormatted({String format = _kdefaultDateFormat, required bool hourFormat12}) => [getDateFormattedOriginal(), getClockFormatted(hourFormat12)].join(' - ');
+  String getDateAndClockFormatted({String format = _kdefaultDateFormat, required bool hourFormat12}) => [getDateFormattedOriginal(), getClockFormatted(hourFormat12)].join(' - ');
 }
 
 extension DEFileSizeFormat on int {
