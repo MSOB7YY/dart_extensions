@@ -1,0 +1,20 @@
+name: dart_extensions
+description: A Collection of Extra Extensions to Enhance Coding.
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: ">=3.0.5 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: ^0.18.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
