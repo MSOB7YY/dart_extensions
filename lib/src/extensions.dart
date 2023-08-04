@@ -144,8 +144,6 @@ extension DEDisplayKeywords on int {
   }
 }
 
-const _kdefaultDateFormat = 'dd MMM yyyy';
-
 extension DEYearDateFormatted on int {
   /// converts [yyyyMMdd] or parsable date to [newPattern].
   /// if failed, returns [toString]
@@ -162,7 +160,7 @@ extension DEYearDateFormatted on int {
 
   String formatTimeFromMSSE(String format) => DateFormat(format).format(DateTime.fromMillisecondsSinceEpoch(this));
 
-  String getDateFormatted({String format = _kdefaultDateFormat}) => formatTimeFromMSSE(format);
+  String getDateFormatted({String format = 'dd MMM yyyy'}) => formatTimeFromMSSE(format);
 
   String getClockFormatted(bool hourFormat12) => formatTimeFromMSSE(hourFormat12 ? 'hh:mm aa' : 'HH:mm');
 }
