@@ -172,7 +172,7 @@ extension DEYearDateFormatted on int {
   /// else returns [getDateFormattedOriginal] [_kdefaultDateFormat];
   String getDateAndClockFormattedOriginal({required String defaultFormat, required bool hourFormat12, String fallbackFormat = _kdefaultDateFormat}) {
     if (defaultFormat.contains('d')) {
-      return getDateAndClockFormatted(hourFormat12: hourFormat12);
+      return getDateAndClockFormatted(format: defaultFormat, hourFormat12: hourFormat12);
     }
     return [getDateFormattedOriginal(format: fallbackFormat), getClockFormatted(hourFormat12)].join(' - ');
   }
