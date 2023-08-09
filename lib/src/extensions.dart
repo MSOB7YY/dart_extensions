@@ -644,6 +644,110 @@ extension DEWidgetsSeparator on Iterable<Widget> {
   }
 }
 
+extension DEListieSizie<N extends num> on List<N> {
+  /// - Having a [targetSize] == null allows for using other parameters while retaining same list size.
+  ///
+  /// - [multiplier] multiplies each value with it, ex:
+  /// ```dart
+  /// [1, 2, 4].changeListSize(multiplier: 2.0) => [2, 4, 8]
+  /// ```
+  ///
+  /// - [clampToMax] gives all values a push to have a final list with max value == `clampToMax`, while keeping relative relation, ex:
+  /// ```dart
+  /// [1, 2, 4].changeListSize(clampToMax: 5.0) => [2, 3, 5] // each value increased by the difference needed to make the max value reach [clampToMax]
+  /// [1, 2, 4].changeListSize(clampToMax: 3.0) => [0, 1, 3] // each value decreased by the difference needed to make the max value reach [clampToMax]
+  /// ```
+  ///
+  /// Setting [enforceClampToMax] to false means using an inverse relation between max value and given [clampToMax],
+  /// resulting in a consistent increase rate relavent to max value, for example, using [clampToMax] of 50.0:
+  /// 1. maxValue == 40 => will give all values 5 => max = 45
+  /// 2. maxValue == 20 => will give all values 20 => max = 40
+  List<double> changeListSize({
+    required int? targetSize,
+    double multiplier = 1.0,
+    double? minimumValue,
+    double? clampToMax,
+    bool enforceClampToMax = false,
+  }) {
+    targetSize ??= length;
+    double maxValue = -double.infinity;
+    double minValue = double.infinity;
+    final finalList = <double>[];
+
+    // -- Case 1
+    if (length > targetSize) {
+      final chunk = length / targetSize;
+      final iterationsCount = targetSize;
+      for (int i = 0; i < iterationsCount; i++) {
+        final part = skip((chunk * i).floor()).take(chunk.floor());
+        final sum = part.fold<double>(0, (previousValue, element) => previousValue + element);
+        final peak = sum / part.length * multiplier;
+        finalList.add(peak);
+        if (maxValue < peak) maxValue = peak;
+        if (minValue > peak) minValue = peak;
+      }
+    }
+    // -- Case 2
+    else if (length < targetSize) {
+      final step = (length - 1) / (targetSize - 1);
+
+      for (int i = 0; i < targetSize; i++) {
+        final index = i * step;
+        final lowerIndex = index.floor();
+        final upperIndex = index.ceil();
+
+        if (lowerIndex == upperIndex) {
+          final toAdd = this[lowerIndex] * multiplier;
+          finalList.add(toAdd);
+          if (maxValue < toAdd) maxValue = toAdd;
+          if (minValue > toAdd) minValue = toAdd;
+        } else {
+          final fraction = index - lowerIndex.toDouble();
+          final interpolatedValue = this[lowerIndex] + (this[upperIndex] - this[lowerIndex]) * fraction;
+          final toAdd = interpolatedValue * multiplier;
+          finalList.add(toAdd);
+          if (maxValue < toAdd) maxValue = toAdd;
+          if (minValue > toAdd) minValue = toAdd;
+        }
+      }
+    }
+    // -- Case 3
+    else {
+      // -- targetSize == list.length
+      for (int i = 0; i <= length - 1; i++) {
+        final value = this[i];
+        final toAdd = value * multiplier;
+        finalList.add(toAdd);
+        if (maxValue < toAdd) maxValue = toAdd;
+        if (minValue > toAdd) minValue = toAdd;
+      }
+    }
+
+    // == Default ==
+    if (minimumValue != null) {
+      final diff = minimumValue - minValue;
+      final refined = List<double>.from(finalList.map((e) => e + diff));
+      finalList
+        ..clear()
+        ..addAll(refined);
+    }
+    if (clampToMax != null) {
+      final difference = clampToMax - maxValue;
+      final maxValueInversed = math.pow(maxValue, -1);
+      // map only if difference != 0
+      return difference != 0
+          ? enforceClampToMax
+              ? finalList.map((e) => e + difference).toList()
+              : finalList.map((e) {
+                  final calculatedAverage = e * 0.4 * maxValueInversed;
+                  return e + difference * calculatedAverage;
+                }).toList()
+          : finalList;
+    }
+    return finalList;
+  }
+}
+
 extension DEMapUtils<K, V> on Map<K, V> {
   /// [keyExists] : Less accurate but instant, O(1).
   /// Shouldn't be used if the value could be null.
