@@ -254,6 +254,24 @@ extension DEFileUtils<R> on File {
     }
   }
 
+  /// Returns decoded [response] if executed successfully.
+  ///
+  /// Otherwise, executes [onError] and returns [null].
+  ///
+  /// has a built in try-catch.
+  dynamic readAsJsonSync({void Function()? onError}) {
+    try {
+      createSync(recursive: true);
+      final content = readAsStringSync();
+      if (content.isEmpty) return null;
+      return jsonDecode(content);
+    } catch (e) {
+      printy(e, isError: true);
+      if (onError != null) onError();
+      return null;
+    }
+  }
+
   /// returns [true] if executed successfully.
   ///
   /// Otherwise, executes [onError] and returns [false].
