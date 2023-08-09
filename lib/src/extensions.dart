@@ -17,9 +17,10 @@ extension DESecondsLabel on int {
     if (this == 0) return "00:00";
 
     String heyPad(int n) => n.toString().padLeft(2, "0");
-    final minutes = this ~/ 60;
+    final hours = this ~/ 3600;
+    final minutes = (this % 3600) ~/ 60;
     final seconds = this % 60;
-    final durinHour = this >= 3600 ? "${heyPad(this ~/ 3600)}:" : '';
+    final durinHour = hours > 0 ? "${heyPad(hours)}:" : '';
     return "$durinHour${heyPad(minutes)}:${heyPad(seconds)}";
   }
 
