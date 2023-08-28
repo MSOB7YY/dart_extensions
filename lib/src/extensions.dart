@@ -194,6 +194,10 @@ extension DEFORMATNUMBER on int? {
 }
 
 extension DEFileUtils<R> on File {
+  Future<int> sizeInBytes() async => await stat().then((value) => value.size);
+
+  int sizeInBytesSync() => statSync().size;
+
   Future<bool> existsAndValid([int minValidSize = 3]) async {
     final st = await stat();
     final doesExist = await exists();
