@@ -772,6 +772,39 @@ extension DEMapUtils<K, V> on Map<K, V> {
   ///
   /// [containsKey] : Certain but not instant, O(keys.length).
   bool keyExists(K key) => this[key] != null;
+
+  void sort([int Function(MapEntry<K, V> a, MapEntry<K, V> b)? compare]) {
+    final sortedE = sorted(compare);
+    this
+      ..clear()
+      ..addEntries(sortedE);
+  }
+
+  void sortBy(Comparable<dynamic> Function(MapEntry<K, V> e) key) {
+    final sorted = sortedBy(key);
+    this
+      ..clear()
+      ..addEntries(sorted);
+  }
+
+  void sortByReverse(Comparable<dynamic> Function(MapEntry<K, V> e) key) {
+    final sorted = sortedByReverse(key);
+    this
+      ..clear()
+      ..addEntries(sorted);
+  }
+
+  List<MapEntry<K, V>> sorted([int Function(MapEntry<K, V> a, MapEntry<K, V> b)? compare]) {
+    return entries.toList()..sort(compare);
+  }
+
+  List<MapEntry<K, V>> sortedBy(Comparable<dynamic> Function(MapEntry<K, V> e) key) {
+    return entries.toList()..sortBy(key);
+  }
+
+  List<MapEntry<K, V>> sortedByReverse(Comparable<dynamic> Function(MapEntry<K, V> e) key) {
+    return entries.toList()..sortByReverse(key);
+  }
 }
 
 extension DEExecuteIfBool on bool {
