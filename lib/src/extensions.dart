@@ -194,6 +194,20 @@ extension DEFORMATNUMBER on int? {
 }
 
 extension DEFileUtils<R> on File {
+  Future<T> executeAndKeepStats<T>(Future<T> Function() fn, {bool keepStats = true}) async {
+    final stats = keepStats ? await stat() : null;
+    final res = await fn();
+    if (stats != null) {
+      try {
+        await setLastAccessed(stats.accessed);
+        await setLastModified(stats.modified);
+      } catch (e) {
+        printy(e, isError: true);
+      }
+    }
+    return res;
+  }
+
   Future<int> sizeInBytes() async => await stat().then((value) => value.size);
 
   int sizeInBytesSync() => statSync().size;
