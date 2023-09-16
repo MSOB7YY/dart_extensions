@@ -54,9 +54,7 @@ extension DEStringUtils on String {
     // second time ensures removing extra ones if number of white spaces is odd, for ex:
     // 1. 'W...H' => 'W..H'
     // 2. 'W..H' => 'W.H'
-    return replaceAll('  ', ' ')
-      ..replaceAll('  ', ' ')
-      ..trim();
+    return replaceAll('  ', ' ').replaceAll('  ', ' ').trim();
   }
 
   String addQuotation() => "'$this'";
@@ -407,22 +405,26 @@ extension DEStuffUtils<T> on T {
 extension DESetExt<E, Id> on Set<E> {
   /// Adds [item] to [this] if it doesn't exist,
   /// or removes [item] if it exists.
-  void addOrRemove(E item) {
+  /// returns true if [item] was removed.
+  bool addOrRemove(E item) {
     final didRemove = remove(item);
     if (!didRemove) {
       add(item);
     }
+    return didRemove;
   }
 }
 
 extension DEListieExt<E, Id> on List<E> {
   /// Adds [item] to [this] if it doesn't exist,
   /// or removes [item] if it exists.
-  void addOrRemove(E item) {
+  /// returns true if [item] was removed.
+  bool addOrRemove(E item) {
     final didRemove = remove(item);
     if (!didRemove) {
       add(item);
     }
+    return didRemove;
   }
 
   /// Replaces All Items that fullfils [test] with [newElement] inside the list.
