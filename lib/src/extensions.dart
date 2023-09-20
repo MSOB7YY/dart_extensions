@@ -107,11 +107,15 @@ extension DEMSSEUtils on int? {
   DateTime? get milliSecondsSinceEpoch => this == null ? null : DateTime.fromMillisecondsSinceEpoch(this!);
 }
 
+extension DEDateTimeUtils on DateTime {
+  int toDaysSince1970() => difference(DateTime(1970)).inDays;
+}
+
 extension DETotalTime on int {
   /// Converts milliSecondsSinceEpoch to DaysSinceEpoch.
   ///
   /// Note: using normal way of getting day doesnt give a shit about local time, this one works just fine.
-  int toDaysSinceEpoch() => DateTime.fromMillisecondsSinceEpoch(this).difference(DateTime(1970)).inDays;
+  int toDaysSince1970() => DateTime.fromMillisecondsSinceEpoch(this).difference(DateTime(1970)).inDays;
 
   /// Formats MSSE to a readable time, ex: `2h 32min`.
   String getTimeFormatted({
