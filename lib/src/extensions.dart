@@ -811,6 +811,23 @@ extension DEMapUtils<K, V> on Map<K, V> {
   List<MapEntry<K, V>> sortedByReverse(Comparable<dynamic> Function(MapEntry<K, V> e) key) {
     return entries.toList()..sortByReverse(key);
   }
+
+  void optimizedAdd(Iterable<MapEntry<K, V>> entries, int max) {
+    final map = this;
+
+    for (final e in entries) {
+      map.remove(e.key); // removing so that items are inserted lastly, indicating that it has been used.
+      map[e.key] = e.value;
+    }
+
+    final excess = map.length - max;
+    if (excess > 0) {
+      final excessKeys = map.keys.take(excess).toList();
+      for (final k in excessKeys) {
+        map.remove(k);
+      }
+    }
+  }
 }
 
 extension DEExecuteIfBool on bool {
