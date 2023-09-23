@@ -88,8 +88,10 @@ extension DEStringUtils on String {
     }
   }
 
-  String get cleanUpForComparison => toLowerCase()
-      .replaceAll(RegExp(r'''[\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\>\=\?\@\[\]\{\}\\\\\^\_\`\~\s\|\@\#\$\%\^\&\*\(\)\-\+\=\[\]\{\}\:\;\"\'\<\>\.\,\?\/\`\~\!\_\s]+'''), '');
+  String get cleanUpForComparisonOnly =>
+      replaceAll(RegExp(r'''[\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\>\=\?\@\[\]\{\}\\\\\^\_\`\~\s\|\@\#\$\%\^\&\*\(\)\-\+\=\[\]\{\}\:\;\"\'\<\>\.\,\?\/\`\~\!\_\s]+'''), '');
+
+  String get cleanUpForComparison => toLowerCase().cleanUpForComparisonOnly;
 }
 
 extension DEIterables<E> on Iterable<E> {
