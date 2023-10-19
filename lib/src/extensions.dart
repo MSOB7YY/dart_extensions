@@ -500,26 +500,20 @@ extension DEListieExt<E, Id> on List<E> {
         return compare;
       });
 
-  void sortByAlts(Comparable Function(E e) key, List<Comparable Function(E e)> alternatives) => sort((a, b) {
-        int compare = key(a).compareTo(key(b));
-        if (compare == 0) {
-          for (final alternative in alternatives) {
-            compare = alternative(a).compareTo(alternative(b));
-            if (compare != 0) break;
-          }
+  void sortByAlts(List<Comparable Function(E e)> alternatives) => sort((a, b) {
+        for (final alternative in alternatives) {
+          final compare = alternative(a).compareTo(alternative(b));
+          if (compare != 0) return compare;
         }
-        return compare;
+        return 0;
       });
 
-  void sortByReverseAlts(Comparable Function(E e) key, List<Comparable Function(E e)> alternatives) => sort((a, b) {
-        int compare = key(b).compareTo(key(a));
-        if (compare == 0) {
-          for (final alternative in alternatives) {
-            compare = alternative(b).compareTo(alternative(a));
-            if (compare != 0) break;
-          }
+  void sortByReverseAlts(List<Comparable Function(E e)> alternatives) => sort((a, b) {
+        for (final alternative in alternatives) {
+          final compare = alternative(b).compareTo(alternative(a));
+          if (compare != 0) return compare;
         }
-        return compare;
+        return 0;
       });
 
   /// returns number of items removed.
