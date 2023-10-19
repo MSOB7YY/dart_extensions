@@ -60,7 +60,7 @@ extension DEStringUtils on String {
   String addQuotation() => "'$this'";
   String addDQuotation() => '"$this"';
 
-  String get overflow => this != '' ? characters.replaceAll(Characters(''), Characters('\u{200B}')).toString() : '';
+  String get overflow => this != '' ? replaceAll(' ', '\u{200B} ') : '';
 
   String formatPath() {
     String formatted = replaceFirst('/storage/', '/').replaceFirst('/emulated/0', 'main');
