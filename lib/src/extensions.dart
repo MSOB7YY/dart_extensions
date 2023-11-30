@@ -405,7 +405,7 @@ extension DEMapExtNull<K, E> on Map<K, List<E>?> {
 }
 
 extension DEStuffUtils<T> on T {
-  T toIf(T convertTo, T ifValueEquals) => this == ifValueEquals ? convertTo : this;
+  T toIf(T convertTo, T Function(T value) ifValueEquals) => this == ifValueEquals(convertTo) ? convertTo : this;
 }
 
 extension DESetExt<E, Id> on Set<E> {
