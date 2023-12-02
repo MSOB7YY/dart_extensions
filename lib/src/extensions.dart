@@ -831,6 +831,9 @@ extension DEMapUtils<K, V> on Map<K, V> {
     return entries.toList()..sortByReverse(key);
   }
 
+  /// Adds [entries] to the map and clears old entries to keep map length at [max].
+  ///
+  /// [entries] are forcely added to the tail, by removing them first.
   void optimizedAdd(Iterable<MapEntry<K, V>> entries, int max) {
     final map = this;
 
@@ -846,6 +849,65 @@ extension DEMapUtils<K, V> on Map<K, V> {
         map.remove(k);
       }
     }
+  }
+
+  /// {@template dart_extensions.extensions.reAssign}
+  ///
+  /// - Re-Assigns [oldKey] with [newKey] to the map while maintaining the same order.
+  ///
+  /// ex:
+  /// ```dart
+  /// final map = {1: 'a', 2: 'b', 3: 'c'};
+  /// map.reAssign(2, 6);
+  /// print(map); // {1: 'a', 6: 'b', 3: 'c'}
+  /// ```
+  ///
+  /// - [newValue] is optional, to assign both key:value in the same index.
+  /// - keys must be comparable (`k == oldKey`).
+  ///
+  /// {@endtemplate}
+  void reAssign(K oldKey, K newKey, {V? newValue}) {
+    final map = this;
+    if (map[oldKey] == null) return;
+    final keys = map.keys.toList();
+    final newMapEntries = <MapEntry<K, V>>[];
+    int? keyIndex; // just to prevent further equality checks
+    keys.loop((k, index) {
+      final value = newValue ?? map[k];
+      if (value != null) {
+        if (keyIndex == null && k == oldKey) {
+          keyIndex = index;
+          newMapEntries.add(MapEntry(newKey, value));
+        } else {
+          newMapEntries.add(MapEntry(k, value));
+        }
+      }
+    });
+    map
+      ..clear()
+      ..addEntries(newMapEntries);
+  }
+}
+
+extension DEMapUtilsNullable<K, V> on Map<K, V?> {
+  /// {@macro dart_extensions.extensions.reAssign}
+  void reAssignNullable(K oldKey, K newKey, {V? newValue}) {
+    final map = this;
+    final keys = map.keys.toList();
+    final newMapEntries = <MapEntry<K, V?>>[];
+    int? keyIndex; // just to prevent further equality checks
+    keys.loop((k, index) {
+      final value = newValue ?? map[k];
+      if (keyIndex == null && k == oldKey) {
+        keyIndex = index;
+        newMapEntries.add(MapEntry(newKey, value as V));
+      } else {
+        newMapEntries.add(MapEntry(k, value));
+      }
+    });
+    map
+      ..clear()
+      ..addEntries(newMapEntries);
   }
 }
 
