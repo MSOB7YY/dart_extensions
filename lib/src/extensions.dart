@@ -348,6 +348,18 @@ extension DEFileUtils<R> on File {
       return null;
     }
   }
+
+  File? writeAsJsonSync(Object? object) {
+    try {
+      createSync(recursive: true);
+      const encoder = JsonEncoder.withIndent("  ");
+      writeAsStringSync(encoder.convert(object));
+      return this;
+    } catch (e) {
+      printy(e, isError: true);
+      return null;
+    }
+  }
 }
 
 extension DENumberUtils<E extends num> on E {
