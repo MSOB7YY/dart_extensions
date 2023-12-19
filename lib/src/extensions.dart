@@ -490,7 +490,7 @@ extension DEListieExt<E, Id> on List<E> {
     }
   }
 
-  E? getEnum(String? string) => firstWhereEff((element) => element.toString().split('.').last == string);
+  E? getEnum(String? string) => string == null ? null : firstWhereEff((element) => element.toString().split('.').last.toLowerCase() == string.toLowerCase());
 
   void insertSafe(int index, E object) => insert(index.clamp(0, length), object);
   void insertAllSafe(int index, Iterable<E> objects) => insertAll(index.clamp(0, length), objects);
