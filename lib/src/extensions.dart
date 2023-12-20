@@ -723,7 +723,7 @@ extension DEListieSizie<N extends num> on List<N> {
     double multiplier = 1.0,
     double? minimumValue,
     double? clampToMax,
-    bool enforceClampToMax = false,
+    bool Function(double minValue, double maxValue)? enforceClampToMax,
   }) {
     targetSize ??= length;
     double maxValue = -double.infinity;
@@ -788,11 +788,12 @@ extension DEListieSizie<N extends num> on List<N> {
         ..addAll(refined);
     }
     if (clampToMax != null) {
+      final enforce = enforceClampToMax?.call(minValue, maxValue) ?? false;
       final difference = clampToMax - maxValue;
       final maxValueInversed = math.pow(maxValue, -1);
       // map only if difference != 0
       return difference != 0
-          ? enforceClampToMax
+          ? enforce
               ? finalList.map((e) => e + difference).toList()
               : finalList.map((e) {
                   final calculatedAverage = e * 0.4 * maxValueInversed;
