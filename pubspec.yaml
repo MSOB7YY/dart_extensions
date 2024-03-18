@@ -2,6 +2,7 @@ name: dart_extensions
 description: A Collection of Extra Extensions to Enhance Coding.
 version: 0.0.1
 homepage:
+publish_to: none
 
 environment:
   sdk: ">=3.0.5 <4.0.0"
@@ -11,6 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.18.0
+  string_clean_utils:
+    git:
+      url: https://github.com/namidaco/string_clean_utils
 
 dev_dependencies:
   flutter_test:

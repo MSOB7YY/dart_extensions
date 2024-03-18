@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
+import 'package:string_clean_utils/string_clean_utils.dart';
 
 extension DESecondsLabel on int {
   String get secondsLabel {
@@ -91,10 +92,9 @@ extension DEStringUtils on String {
     }
   }
 
-  String get cleanUpForComparisonOnly =>
-      replaceAll(RegExp(r'''[\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\>\=\?\@\[\]\{\}\\\\\^\_\`\~\s\|\@\#\$\%\^\&\*\(\)\-\+\=\[\]\{\}\:\;\"\'\<\>\.\,\?\/\`\~\!\_\s]+'''), '');
-
-  String get cleanUpForComparison => toLowerCase().cleanUpForComparisonOnly;
+  String get removeSymbols => StringCleanUtils.removeSymbols(this);
+  String get normalizeAccents => StringCleanUtils.normalize(this);
+  String get cleanUpForComparison => normalizeAccents.removeSymbols.toLowerCase();
 }
 
 extension DEIterables<E> on Iterable<E> {
