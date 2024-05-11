@@ -917,7 +917,7 @@ extension DEMapUtilsNullable<K, V> on Map<K, V?> {
       final value = newValue ?? map[k];
       if (keyIndex == null && k == oldKey) {
         keyIndex = index;
-        newMapEntries.add(MapEntry(newKey, value as V));
+        newMapEntries.add(MapEntry(newKey, value));
       } else {
         newMapEntries.add(MapEntry(k, value));
       }
