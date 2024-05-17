@@ -722,13 +722,17 @@ extension DEListieSizie<N extends num> on List<N> {
   /// 1. maxValue == 40 => will give all values 5 => max = 45
   /// 2. maxValue == 20 => will give all values 20 => max = 40
   List<double> changeListSize({
-    required int? targetSize,
+    required int targetSize,
     double multiplier = 1.0,
     double? minimumValue,
     double? clampToMax,
     bool Function(double minValue, double maxValue)? enforceClampToMax,
   }) {
-    targetSize ??= length;
+    final length = this.length;
+    if (targetSize == length) return cast();
+    if (targetSize == 0 || length == 0) return <double>[];
+    if (length == 1) return List<double>.filled(targetSize, this[0].toDouble(), growable: true);
+
     double maxValue = -double.infinity;
     double minValue = double.infinity;
     final finalList = <double>[];
