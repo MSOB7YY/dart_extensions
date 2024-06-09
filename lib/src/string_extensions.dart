@@ -41,18 +41,6 @@ extension DEStringUtils on String {
     return parts.join(splitBy);
   }
 
-  List<String> multiSplit(Iterable<String> delimiters, Iterable<String> blacklist) {
-    if (blacklist.any((s) => contains(s))) {
-      return [this];
-    } else {
-      return delimiters.isEmpty
-          ? [this]
-          : split(
-              RegExp(delimiters.map(RegExp.escape).join('|'), caseSensitive: false),
-            );
-    }
-  }
-
   String get removeSymbols => StringCleanUtils.removeSymbols(this);
   String get normalizeAccents => StringCleanUtils.normalize(this);
   String get cleanUpForComparison => normalizeAccents.removeSymbols.toLowerCase();
