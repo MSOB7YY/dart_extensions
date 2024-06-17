@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_this
+
 import 'dart:math' as math;
 
 extension DEListieExt<E, Id> on List<E> {
@@ -231,7 +233,8 @@ extension DEListieExt<E, Id> on List<E> {
 
   /// Efficient version of lastWhere()
   E? lastWhereEff(bool Function(E e) test, {E? fallback}) {
-    for (int i = length - 1; i >= 0; i--) {
+    final int lengthIndex = this.length - 1;
+    for (int i = lengthIndex; i >= 0; i--) {
       final element = this[i];
       if (test(element)) {
         return element;
@@ -242,6 +245,7 @@ extension DEListieExt<E, Id> on List<E> {
 
   /// Efficient version of firstWhere()
   E? firstWhereEff(bool Function(E e) test, {E? fallback}) {
+    final int length = this.length;
     for (int i = 0; i < length; i++) {
       final element = this[i];
       if (test(element)) {
@@ -294,9 +298,16 @@ extension DEListieSizie<N extends num> on List<N> {
     bool Function(double minValue, double maxValue)? enforceClampToMax,
   }) {
     final length = this.length;
-    if (targetSize == length) return cast();
-    if (targetSize == 0 || length == 0) return <double>[];
-    if (length == 1) return List<double>.filled(targetSize, this[0].toDouble(), growable: true);
+    if (targetSize == 0) return <double>[];
+    if (length == 0) {
+      if (minimumValue != null) {
+        return List<double>.filled(targetSize, minimumValue * multiplier, growable: true);
+      } else if (clampToMax != null) {
+        return List<double>.filled(targetSize, clampToMax * multiplier, growable: true);
+      } else {
+        return <double>[];
+      }
+    }
 
     double maxValue = -double.infinity;
     double minValue = double.infinity;
@@ -304,15 +315,27 @@ extension DEListieSizie<N extends num> on List<N> {
 
     // -- Case 1
     if (length > targetSize) {
-      final chunk = length / targetSize;
-      final iterationsCount = targetSize;
-      for (int i = 0; i < iterationsCount; i++) {
-        final part = skip((chunk * i).floor()).take(chunk.floor());
-        final sum = part.fold<double>(0, (previousValue, element) => previousValue + element);
-        final peak = sum / part.length * multiplier;
-        finalList.add(peak);
-        if (maxValue < peak) maxValue = peak;
-        if (minValue > peak) minValue = peak;
+      final int chunkSmall = (length / targetSize).floor(); // 0.9 -> 0
+      final int chunkBig = (length / targetSize).round(); // 0.9 -> 1 (not ciel to minimize big unnecessary jumps)
+
+      bool usingChunkBig = true;
+      num subsum = 0;
+      int subIterated = 0;
+      for (int i = 0; i < length; i++) {
+        subsum += this[i];
+        subIterated++;
+
+        final chunkToUse = usingChunkBig ? chunkBig : chunkSmall;
+        if (subIterated == chunkToUse) {
+          final averaged = (subsum / subIterated) * multiplier;
+
+          finalList.add(averaged);
+          if (maxValue < averaged) maxValue = averaged;
+          if (minValue > averaged) minValue = averaged;
+          subsum = 0;
+          subIterated = 0;
+          usingChunkBig = !usingChunkBig;
+        }
       }
     }
     // -- Case 2
@@ -324,19 +347,18 @@ extension DEListieSizie<N extends num> on List<N> {
         final lowerIndex = index.floor();
         final upperIndex = index.ceil();
 
+        double toAdd;
         if (lowerIndex == upperIndex) {
-          final toAdd = this[lowerIndex] * multiplier;
-          finalList.add(toAdd);
-          if (maxValue < toAdd) maxValue = toAdd;
-          if (minValue > toAdd) minValue = toAdd;
+          toAdd = this[lowerIndex] * multiplier;
         } else {
           final fraction = index - lowerIndex.toDouble();
           final interpolatedValue = this[lowerIndex] + (this[upperIndex] - this[lowerIndex]) * fraction;
-          final toAdd = interpolatedValue * multiplier;
-          finalList.add(toAdd);
-          if (maxValue < toAdd) maxValue = toAdd;
-          if (minValue > toAdd) minValue = toAdd;
+          toAdd = interpolatedValue * multiplier;
         }
+
+        finalList.add(toAdd);
+        if (maxValue < toAdd) maxValue = toAdd;
+        if (minValue > toAdd) minValue = toAdd;
       }
     }
     // -- Case 3

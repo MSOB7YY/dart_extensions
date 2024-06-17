@@ -2,9 +2,22 @@
 
 import 'package:benchmarking/benchmarking.dart';
 import 'package:dart_extensions/src/string_extensions.dart';
+import 'package:dart_extensions/src/list_extensions.dart';
 import 'package:test/test.dart';
 
 void main() {
+  group('DEListieSizie', () {
+    test('test changeListSize', () {
+      final orgList = [1, 5, 7, 9];
+      final newList = orgList.changeListSize(
+        targetSize: 3,
+        // clampToMax: 9,
+        // enforceClampToMax: (minValue, maxValue) => true,
+      );
+      print(newList);
+    });
+  });
+
   group('DEStringUtils', () {
     test('test splitFirst() && splitLast()', () {
       const text = 'my name is  he  hehe .';
