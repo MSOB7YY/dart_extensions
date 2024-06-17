@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: unnecessary_this
 
 import 'dart:io';
 
@@ -44,6 +44,97 @@ extension DEStringUtils on String {
   String get removeSymbols => StringCleanUtils.removeSymbols(this);
   String get normalizeAccents => StringCleanUtils.normalize(this);
   String get cleanUpForComparison => normalizeAccents.removeSymbols.toLowerCase();
+
+  /// Similar to `split().first`, except that this can break early if [onMatch] returned non-null value,
+  /// which means that this will be much faster especially for long text with many splitter occurences.
+  ///
+  /// example:
+  /// ```dart
+  /// const text = 'my name is kuru';
+  /// text.splitFirst('is', onMatch: (part) => part) as String; // `my name `
+  /// ```
+  T? splitFirst<T>(
+    String splitter, {
+    required T? Function(String part) onMatch,
+  }) {
+    final splitterCodes = splitter.codeUnits; // [".", "."]
+    var currentCodes = <int>[];
+    var currentTempSplitterCodes = <int>[];
+    int currentSplitterIndex = 0;
+    final textCodeUnits = this.codeUnits;
+    final length = textCodeUnits.length;
+    for (int i = 0; i < length; i++) {
+      final codeUnit = textCodeUnits[i];
+      if (splitterCodes[currentSplitterIndex] == codeUnit) {
+        // -- is splitter streak
+        currentTempSplitterCodes.add(codeUnit);
+        if (currentSplitterIndex == splitterCodes.length - 1) {
+          final value = onMatch(String.fromCharCodes(currentCodes));
+          if (value != null) return value;
+          currentCodes = [];
+          currentTempSplitterCodes = []; // its no longer temp, we already used it.
+        } else {
+          currentSplitterIndex++;
+          continue;
+        }
+      } else {
+        // -- is normal text
+        currentCodes.add(codeUnit);
+        currentSplitterIndex = 0;
+        if (currentTempSplitterCodes.isNotEmpty) {
+          currentCodes.addAll(currentTempSplitterCodes);
+          currentTempSplitterCodes = [];
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Similar to `split().last`, except that this can break early if [onMatch] returned non-null value,
+  /// which means that this will be much faster especially for long text with many splitter occurences.
+  ///
+  /// example:
+  /// ```dart
+  /// const text = 'my name is kuru';
+  /// text.splitLast('is', onMatch: (part) => part) as String; // ` kuru`
+  /// ```
+  T? splitLast<T>(
+    String splitter, {
+    required T? Function(String part) onMatch,
+  }) {
+    final splittersLengthIndex = splitter.length - 1;
+    final splitterCodes = splitter.codeUnits; // [".", "."]
+    var currentCodes = <int>[];
+    var currentTempSplitterCodes = <int>[];
+    int currentSplitterIndex = splittersLengthIndex;
+    final textCodeUnits = this.codeUnits;
+    final length = textCodeUnits.length - 1;
+    for (int i = length; i >= 0; i--) {
+      final codeUnit = textCodeUnits[i];
+      if (splitterCodes[currentSplitterIndex] == codeUnit) {
+        // -- is splitter streak
+        currentTempSplitterCodes.add(codeUnit);
+        if (currentSplitterIndex == splitterCodes.length - 1) {
+          final value = onMatch(String.fromCharCodes(currentCodes.reversed));
+          if (value != null) return value;
+          currentCodes = [];
+          currentTempSplitterCodes = []; // its no longer temp, we already used it.
+        } else {
+          currentSplitterIndex--;
+          continue;
+        }
+      } else {
+        // -- is normal text
+        currentCodes.add(codeUnit);
+        currentSplitterIndex = splittersLengthIndex;
+        if (currentTempSplitterCodes.isNotEmpty) {
+          currentCodes.addAll(currentTempSplitterCodes);
+          currentTempSplitterCodes = [];
+        }
+      }
+    }
+    return null;
+  }
 }
 
 extension DEStringUtilsNull on String? {
