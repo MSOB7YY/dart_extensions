@@ -17,6 +17,44 @@ void main() {
       print(newList);
     });
   });
+  group('DEListieExt', () {
+    test('test DEListieExt.move', () async {
+      final varl = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      final varl2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+      const removeFrom = 8;
+      const insertTo = 2;
+
+      final e = varl.removeAt(removeFrom);
+      varl.insert(insertTo, e);
+
+      varl2.move(removeFrom, insertTo);
+
+      expect(varl.isEqualTo(varl2), true);
+    });
+    test('benchmark DEListieExt.move', () async {
+      const count = 10000;
+      final varl = List.filled(count, 1, growable: true);
+      final varl2 = List.filled(count, 1, growable: true);
+
+      const removeFrom = 2;
+      const insertTo = 100;
+
+      syncBenchmark(
+        'remove & insert',
+        () {
+          final e = varl.removeAt(removeFrom);
+          varl.insert(insertTo, e);
+        },
+      ).report();
+      syncBenchmark(
+        're-assign',
+        () {
+          varl2.move(removeFrom, insertTo);
+        },
+      ).report();
+    });
+  });
 
   group('DEStringUtils', () {
     test('test splitFirst() && splitLast()', () {

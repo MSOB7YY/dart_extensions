@@ -268,6 +268,27 @@ extension DEListieExt<E, Id> on List<E> {
     indexesToRemove.reverseLoop((indexToRemove) => removeAt(indexToRemove));
   }
 
+  /// Better alternative than [removeAt] & [insert].
+  /// The closer the gap between [oldIndex] and [newIndex], the more performance will be noticed compared to [removeAt] & [insert].
+  void move(int oldIndex, int newIndex) {
+    if (oldIndex == newIndex) return;
+
+    var list = this;
+    var temp = list[oldIndex];
+
+    if (oldIndex < newIndex) {
+      for (int i = oldIndex; i < newIndex; i++) {
+        list[i] = list[i + 1];
+      }
+    } else {
+      for (int i = oldIndex; i > newIndex; i--) {
+        list[i] = list[i - 1];
+      }
+    }
+
+    list[newIndex] = temp;
+  }
+
   E? get firstOrNull => isEmpty ? null : this[0];
   E? get lastOrNull => isEmpty ? null : this[length - 1];
 }
