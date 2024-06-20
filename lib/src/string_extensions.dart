@@ -45,6 +45,8 @@ extension DEStringUtils on String {
   String get normalizeAccents => StringCleanUtils.normalize(this);
   String get cleanUpForComparison => normalizeAccents.removeSymbols.toLowerCase();
 
+  /// {@template dart_extensions.string_utils.splitFirst}
+  ///
   /// Similar to `split().first`, except that this can break early if [onMatch] returned non-null value,
   /// which means that this will be much faster especially for long text with many splitter occurences.
   ///
@@ -53,6 +55,7 @@ extension DEStringUtils on String {
   /// const text = 'my name is kuru';
   /// text.splitFirst('is', onMatch: (part) => part) as String; // `my name `
   /// ```
+  /// {@endtemplate}
   T? splitFirst<T>(
     String splitter, {
     required T? Function(String part) onMatch,
@@ -90,6 +93,8 @@ extension DEStringUtils on String {
     return null;
   }
 
+  /// {@template dart_extensions.string_utils.splitLast}
+  ///
   /// Similar to `split().last`, except that this can break early if [onMatch] returned non-null value,
   /// which means that this will be much faster especially for long text with many splitter occurences.
   ///
@@ -98,6 +103,8 @@ extension DEStringUtils on String {
   /// const text = 'my name is kuru';
   /// text.splitLast('is', onMatch: (part) => part) as String; // ` kuru`
   /// ```
+  ///
+  /// {@endtemplate}
   T? splitLast<T>(
     String splitter, {
     required T? Function(String part) onMatch,
@@ -134,6 +141,20 @@ extension DEStringUtils on String {
       }
     }
     return null;
+  }
+
+  /// Calls [splitFirst] and match the first occurence. if no match was found, return [this].
+  ///
+  /// {@macro dart_extensions.string_utils.splitFirst}
+  String splitFirstM(String splitter) {
+    return splitFirst(splitter, onMatch: (part) => part) ?? this;
+  }
+
+  /// Calls [splitLast] and match the first occurence. if no match was found, return [this].
+  ///
+  /// {@macro dart_extensions.string_utils.splitLast}
+  String splitLastM(String splitter) {
+    return splitLast(splitter, onMatch: (part) => part) ?? this;
   }
 }
 
