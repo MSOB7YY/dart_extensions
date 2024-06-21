@@ -64,13 +64,13 @@ void main() {
       String splittedold = '';
       String splittednew = '';
       splittedold = text.split(splitter).first;
-      splittednew = text.splitFirst(splitter, onMatch: (part) => part) as String;
+      splittednew = text.splitFirst(splitter);
       expect(splittedold, splittednew);
 
       String splittedoldlast = '';
       String splittednewlast = '';
       splittedoldlast = text.split(splitter).last;
-      splittednewlast = text.splitLast(splitter, onMatch: (part) => part) as String;
+      splittednewlast = text.splitLast(splitter);
       expect(splittedoldlast, splittednewlast);
     });
     test('benchmark splitFirst() && splitLast()', () {
@@ -86,12 +86,12 @@ void main() {
       String splittedold = '';
       String splittednew = '';
       syncBenchmark('old (first)', () => splittedold = text.split(splitter).first).report();
-      syncBenchmark('new (first)', () => splittednew = text.splitFirst(splitter, onMatch: (part) => part) as String).report();
+      syncBenchmark('new (first)', () => splittednew = text.splitFirst(splitter)).report();
 
       String splittedoldlast = '';
       String splittednewlast = '';
       syncBenchmark('old (last)', () => splittedoldlast = text.split(splitter).last).report();
-      syncBenchmark('new (last)', () => splittednewlast = text.splitLast(splitter, onMatch: (part) => part) as String).report();
+      syncBenchmark('new (last)', () => splittednewlast = text.splitLast(splitter)).report();
     });
   });
 }

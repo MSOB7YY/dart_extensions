@@ -45,7 +45,7 @@ extension DEStringUtils on String {
   String get normalizeAccents => StringCleanUtils.normalize(this);
   String get cleanUpForComparison => normalizeAccents.removeSymbols.toLowerCase();
 
-  /// {@template dart_extensions.string_utils.splitFirst}
+  /// {@template dart_extensions.string_utils.splitFirstM}
   ///
   /// Similar to `split().first`, except that this can break early if [onMatch] returned non-null value,
   /// which means that this will be much faster especially for long text with many splitter occurences.
@@ -53,10 +53,10 @@ extension DEStringUtils on String {
   /// example:
   /// ```dart
   /// const text = 'my name is kuru';
-  /// text.splitFirst('is', onMatch: (part) => part) as String; // `my name `
+  /// text.splitFirstM('is', onMatch: (part) => part) as String; // `my name `
   /// ```
   /// {@endtemplate}
-  T? splitFirst<T>(
+  T? splitFirstM<T>(
     String splitter, {
     required T? Function(String part) onMatch,
   }) {
@@ -93,7 +93,7 @@ extension DEStringUtils on String {
     return null;
   }
 
-  /// {@template dart_extensions.string_utils.splitLast}
+  /// {@template dart_extensions.string_utils.splitLastM}
   ///
   /// Similar to `split().last`, except that this can break early if [onMatch] returned non-null value,
   /// which means that this will be much faster especially for long text with many splitter occurences.
@@ -101,11 +101,11 @@ extension DEStringUtils on String {
   /// example:
   /// ```dart
   /// const text = 'my name is kuru';
-  /// text.splitLast('is', onMatch: (part) => part) as String; // ` kuru`
+  /// text.splitLastM('is', onMatch: (part) => part) as String; // ` kuru`
   /// ```
   ///
   /// {@endtemplate}
-  T? splitLast<T>(
+  T? splitLastM<T>(
     String splitter, {
     required T? Function(String part) onMatch,
   }) {
@@ -143,18 +143,18 @@ extension DEStringUtils on String {
     return null;
   }
 
-  /// Calls [splitFirst] and match the first occurence. if no match was found, return [this].
+  /// Calls [splitFirstM] and match the first occurence. if no match was found, return [this].
   ///
-  /// {@macro dart_extensions.string_utils.splitFirst}
-  String splitFirstM(String splitter) {
-    return splitFirst(splitter, onMatch: (part) => part) ?? this;
+  /// {@macro dart_extensions.string_utils.splitFirstM}
+  String splitFirst(String splitter) {
+    return splitFirstM(splitter, onMatch: (part) => part) ?? this;
   }
 
-  /// Calls [splitLast] and match the first occurence. if no match was found, return [this].
+  /// Calls [splitLastM] and match the first occurence. if no match was found, return [this].
   ///
-  /// {@macro dart_extensions.string_utils.splitLast}
-  String splitLastM(String splitter) {
-    return splitLast(splitter, onMatch: (part) => part) ?? this;
+  /// {@macro dart_extensions.string_utils.splitLastM}
+  String splitLast(String splitter) {
+    return splitLastM(splitter, onMatch: (part) => part) ?? this;
   }
 }
 
