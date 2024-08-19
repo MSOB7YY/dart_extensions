@@ -77,6 +77,10 @@ extension DEDisplayKeywords on int {
   String displayKeyword(String singular, String plural) {
     return '${formatDecimal()} ${this > 1 ? plural : singular}';
   }
+
+  String displayKeywordShort(String singular, String plural) {
+    return '${formatDecimalShort()} ${this > 1 ? plural : singular}';
+  }
 }
 
 extension DEYearDateFormatted on int {
