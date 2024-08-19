@@ -114,7 +114,7 @@ extension DEEnumUtils on Enum {
   String get convertToString => toString().split('.').last;
 }
 
-extension DEFormatNumber on int? {
+extension DEFormatNumber on int {
   String formatDecimalShort([bool full = false]) => (full ? NumberFormat('#,###,###') : NumberFormat.compact()).format(this);
   String formatDecimal() => NumberFormat('#,###,###').format(this);
 }
