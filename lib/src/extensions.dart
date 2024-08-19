@@ -4,7 +4,6 @@ import 'dart:developer' as dev;
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 extension DESecondsLabel on int {
@@ -161,23 +160,6 @@ extension DEIterableUtils<E> on Iterable<E> {
   E? get lastOrNull => isEmpty ? null : last;
 
   Iterable<E> withLimit([int? limit]) => limit != null ? take(limit) : this;
-}
-
-extension DEWidgetsSeparator on Iterable<Widget> {
-  Iterable<Widget> addSeparators({required Widget separator, int skipFirst = 0}) sync* {
-    final iterator = this.iterator;
-    int count = 0;
-
-    while (iterator.moveNext()) {
-      if (count < skipFirst) {
-        yield iterator.current;
-      } else {
-        yield separator;
-        yield iterator.current;
-      }
-      count++;
-    }
-  }
 }
 
 extension DEExecuteIfBool on bool {
