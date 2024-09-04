@@ -50,7 +50,7 @@ extension DETotalTime on int {
   int toDaysSince1970() => DateTime.fromMillisecondsSinceEpoch(this).difference(DateTime(1970)).inDays;
 
   /// Formats MSSE to a readable time, ex: `2h 32min`.
-  String getTimeFormatted({
+  String getSecondsFormatted({
     String hourChar = 'h',
     String minutesChar = 'min',
     String separator = ' ',
