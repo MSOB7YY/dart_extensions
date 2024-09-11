@@ -180,7 +180,7 @@ extension DEPrintFunction on dynamic {
 
 /// logs the message only in Debug mode.
 void printo(dynamic message, {bool printInDebugOnly = true, bool isError = false, dynamic classScope, bool dumpshit = false}) {
-  if (printInDebugOnly && kDebugMode) {
+  if (kDebugMode && printInDebugOnly) {
     final className = classScope ?? '';
     final isClassNameLong = className.toString().split('').length > 50;
     final msgWithClass = "[$className]: ${isClassNameLong ? '\n' : ''} $message";
