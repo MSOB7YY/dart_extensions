@@ -316,7 +316,7 @@ extension DEListieSizie<N extends num> on List<N> {
     double multiplier = 1.0,
     double? minimumValue,
     double? clampToMax,
-    bool Function(double minValue, double maxValue)? enforceClampToMax,
+    bool Function(num minValue, num maxValue)? enforceClampToMax,
   }) {
     final length = this.length;
     if (targetSize == 0) return <double>[];
@@ -330,8 +330,8 @@ extension DEListieSizie<N extends num> on List<N> {
       }
     }
 
-    double maxValue = -double.infinity;
-    double minValue = double.infinity;
+    num maxValue = this[0];
+    num minValue = this[0];
     final finalList = <double>[];
 
     // -- Case 1
