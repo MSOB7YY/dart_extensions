@@ -1,12 +1,6 @@
 import 'package:dart_extensions/src/list_extensions.dart';
 
 extension NPMapUtils<K, V> on Map<K, V> {
-  /// [keyExists] : Less accurate but instant, O(1).
-  /// Shouldn't be used if the value could be null.
-  ///
-  /// [containsKey] : Certain but not instant, O(keys.length).
-  bool keyExists(K key) => this[key] != null;
-
   void assign(K key, V value) {
     clear();
     this[key] = value;
@@ -127,7 +121,7 @@ extension NPMapUtilsNullable<K, V> on Map<K, V?> {
 
 extension NPMapExtNull<K, E> on Map<K, List<E>?> {
   void addForce(K key, E item) {
-    if (keyExists(key)) {
+    if (containsKey(key)) {
       this[key]!.add(item);
     } else {
       this[key] = <E>[item];
@@ -135,7 +129,7 @@ extension NPMapExtNull<K, E> on Map<K, List<E>?> {
   }
 
   void insertForce(int index, K key, E item) {
-    if (keyExists(key)) {
+    if (containsKey(key)) {
       this[key]!.insert(index, item);
     } else {
       this[key] = <E>[item];
@@ -145,7 +139,7 @@ extension NPMapExtNull<K, E> on Map<K, List<E>?> {
   /// Same as [addNoDuplicates], but initializes new list in case list was null.
   /// i.e: entry doesnt exist in map.
   void addNoDuplicatesForce(K key, E item, {bool preventDuplicates = true}) {
-    if (keyExists(key)) {
+    if (containsKey(key)) {
       this[key]!.addNoDuplicates(item, preventDuplicates: preventDuplicates);
     } else {
       this[key] = <E>[item];
@@ -153,7 +147,7 @@ extension NPMapExtNull<K, E> on Map<K, List<E>?> {
   }
 
   void addAllNoDuplicatesForce(K key, Iterable<E> items, {bool preventDuplicates = true}) {
-    if (keyExists(key)) {
+    if (containsKey(key)) {
       this[key]!.addAllNoDuplicates(items, preventDuplicates: preventDuplicates);
     } else {
       this[key] = items.toList();
