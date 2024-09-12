@@ -2,7 +2,7 @@
 
 import 'dart:math' as math;
 
-extension DEListieExt<E, Id> on List<E> {
+extension DEListieExt<E> on List<E> {
   void assign(E element) {
     clear();
     add(element);
@@ -102,9 +102,6 @@ extension DEListieExt<E, Id> on List<E> {
     }
   }
 
-  E? getEnum(String? string) => string == null ? null : firstWhereEff((element) => element.toString().split('.').last == string);
-  E? getEnumLoose(String? string) => string == null ? null : firstWhereEff((element) => element.toString().split('.').last.toLowerCase() == string.toLowerCase());
-
   void insertSafe(int index, E object) => insert(index.clamp(0, length), object);
   void insertAllSafe(int index, Iterable<E> objects) => insertAll(index.clamp(0, length), objects);
 
@@ -169,7 +166,7 @@ extension DEListieExt<E, Id> on List<E> {
   }
 
   /// returns number of items removed.
-  int removeDuplicates([Id Function(E element)? id]) {
+  int removeDuplicates<Id>([Id Function(E element)? id]) {
     final uniquedSet = <dynamic>{};
     final lengthBefore = length;
     retainWhere((e) => uniquedSet.add(id != null ? id(e) : e));
@@ -177,7 +174,7 @@ extension DEListieExt<E, Id> on List<E> {
     return lengthBefore - lengthAfter;
   }
 
-  List<E> uniqued([Id Function(E element)? id]) {
+  List<E> uniqued<Id>([Id Function(E element)? id]) {
     final uniquedSet = <dynamic>{};
     final list = List<E>.from(this);
     list.retainWhere((e) => uniquedSet.add(id != null ? id(e) : e));
@@ -291,6 +288,11 @@ extension DEListieExt<E, Id> on List<E> {
 
   E? get firstOrNull => isEmpty ? null : this[0];
   E? get lastOrNull => isEmpty ? null : this[length - 1];
+}
+
+extension DEListieEnum<E extends Enum> on List<E> {
+  E? getEnum(String? string) => string == null ? null : firstWhereEff((element) => element.name == string);
+  E? getEnumLoose(String? string) => string == null ? null : firstWhereEff((element) => element.name.toLowerCase() == string.toLowerCase());
 }
 
 extension DEListieSizie<N extends num> on List<N> {
