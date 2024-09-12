@@ -265,7 +265,7 @@ extension DEListieExt<E> on List<E> {
     indexesToRemove.reverseLoop((indexToRemove) => removeAt(indexToRemove));
   }
 
-  /// Better alternative than [removeAt] & [insert].
+  /// Better alternative for [removeAt] & [insert].
   /// The closer the gap between [oldIndex] and [newIndex], the more performance will be noticed compared to [removeAt] & [insert].
   void move(int oldIndex, int newIndex) {
     if (oldIndex == newIndex) return;

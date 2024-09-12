@@ -8,13 +8,11 @@ import 'package:test/test.dart';
 void main() {
   group('DEListieSizie', () {
     test('test changeListSize', () {
-      final orgList = [1, 5, 7, 9];
-      final newList = orgList.changeListSize(
-        targetSize: 3,
-        // clampToMax: 9,
-        // enforceClampToMax: (minValue, maxValue) => true,
-      );
-      print(newList);
+      final orgList = <num>[1, 3, 5, 7];
+      final smallerList = orgList.changeListSize(targetSize: 3);
+      expect(smallerList.length, 3);
+      final biggerList = orgList.changeListSize(targetSize: 6);
+      expect(biggerList.length, 6);
     });
   });
   group('DEListieExt', () {
