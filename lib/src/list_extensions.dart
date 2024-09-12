@@ -339,6 +339,9 @@ extension DEListieSizie<N extends num> on List<N> {
       final int chunkSmall = (length / targetSize).floor(); // 0.9 -> 0
       final int chunkBig = (length / targetSize).round(); // 0.9 -> 1 (not ciel to minimize big unnecessary jumps)
 
+      final int? indexToSumMoreAtOnceAt = chunkSmall == chunkBig ? (length ~/ 2).floor() : null;
+      final int? indexToSumMoreAtOnceAtSkipCount = indexToSumMoreAtOnceAt != null ? (length / 2).round() + 1 : null;
+
       bool usingChunkBig = true;
       num subsum = 0;
       int subIterated = 0;
@@ -346,8 +349,21 @@ extension DEListieSizie<N extends num> on List<N> {
         subsum += this[i];
         subIterated++;
 
-        final chunkToUse = usingChunkBig ? chunkBig : chunkSmall;
-        if (subIterated == chunkToUse) {
+        bool addAverage;
+
+        if (indexToSumMoreAtOnceAt == i) {
+          final toSkip = indexToSumMoreAtOnceAtSkipCount! < length - 1 ? indexToSumMoreAtOnceAtSkipCount : length - 1;
+          for (int j = i + 1; j <= toSkip; j++) {
+            subsum += this[j];
+            subIterated++;
+            i++;
+          }
+          addAverage = true;
+        } else {
+          addAverage = subIterated == (usingChunkBig ? chunkBig : chunkSmall);
+        }
+
+        if (addAverage) {
           final averaged = (subsum / subIterated) * multiplier;
 
           finalList.add(averaged);
