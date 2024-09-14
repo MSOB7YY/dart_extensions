@@ -20,9 +20,25 @@ extension DEFileUtils<R> on File {
     return res;
   }
 
-  Future<int> sizeInBytes() async => await stat().then((value) => value.size);
+  Future<int?> fileSize() async {
+    try {
+      return await length();
+    } catch (_) {
+      return null;
+    }
+  }
 
-  int sizeInBytesSync() => statSync().size;
+  int? fileSizeSync() {
+    try {
+      return lengthSync();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String? fileSizeFormatted() {
+    return fileSizeSync()?.fileSizeFormatted;
+  }
 
   Future<bool> existsAndValid([int minValidSize = 3]) async {
     final st = await stat();
