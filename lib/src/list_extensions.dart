@@ -384,7 +384,8 @@ extension DEListieSizie<N extends num> on List<N> {
       for (int i = 0; i < targetSize; i++) {
         final index = i * step;
         final lowerIndex = index.floor();
-        final upperIndex = index.ceil();
+        int upperIndex = index.ceil();
+        if (upperIndex > this.length - 1) upperIndex = this.length - 1;
 
         double toAdd;
         if (lowerIndex == upperIndex) {
