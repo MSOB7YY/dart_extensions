@@ -169,7 +169,8 @@ extension DEListieExt<E> on List<E> {
   int removeDuplicates<Id>([Id Function(E element)? id]) {
     final uniquedSet = <dynamic>{};
     final lengthBefore = length;
-    retainWhere((e) => uniquedSet.add(id != null ? id(e) : e));
+    final fn = id ?? (e) => e as Id;
+    retainWhere((e) => uniquedSet.add(fn(e)));
     final lengthAfter = length;
     return lengthBefore - lengthAfter;
   }
@@ -177,7 +178,8 @@ extension DEListieExt<E> on List<E> {
   List<E> uniqued<Id>([Id Function(E element)? id]) {
     final uniquedSet = <dynamic>{};
     final list = List<E>.from(this);
-    list.retainWhere((e) => uniquedSet.add(id != null ? id(e) : e));
+    final fn = id ?? (e) => e as Id;
+    list.retainWhere((e) => uniquedSet.add(fn(e)));
     return list;
   }
 
