@@ -137,9 +137,9 @@ extension DEIntUtils on int {
   }
 }
 
-extension DEStuffUtils<T> on T {
-  T toIf(T convertTo, T ifValueEquals) => this == ifValueEquals ? convertTo : this;
-  T toIfValueIs(T convertTo, T Function(T value) ifValueEquals) => this == ifValueEquals(convertTo) ? convertTo : this;
+extension DEStuffUtils<T, R> on T {
+  R toIf(R convertTo, T ifValueEquals) => this == ifValueEquals ? convertTo : this as R;
+  R toIfValueIs(R convertTo, T Function(T value) ifValueEquals) => this == ifValueEquals(this) ? convertTo : this as R;
 }
 
 extension DESetExt<E, Id> on Set<E> {
