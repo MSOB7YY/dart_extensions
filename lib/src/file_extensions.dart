@@ -88,9 +88,12 @@ extension DEFileUtils<R> on File {
   /// Otherwise, executes [onError] and returns [null].
   ///
   /// has a built in try-catch.
-  Future<dynamic> readAsJson({void Function()? onError}) async {
+  Future<dynamic> readAsJson({void Function()? onError, bool ensureExists = true}) async {
     try {
-      await create(recursive: true);
+      if (ensureExists) {
+        if (!await exists()) return null;
+      }
+
       final content = await readAsString();
       if (content.isEmpty) return null;
       return jsonDecode(content);
@@ -106,9 +109,11 @@ extension DEFileUtils<R> on File {
   /// Otherwise, executes [onError] and returns [null].
   ///
   /// has a built in try-catch.
-  dynamic readAsJsonSync({void Function()? onError}) {
+  dynamic readAsJsonSync({void Function()? onError, bool ensureExists = true}) {
     try {
-      createSync(recursive: true);
+      if (ensureExists) {
+        if (!existsSync()) return null;
+      }
       final content = readAsStringSync();
       if (content.isEmpty) return null;
       return jsonDecode(content);
