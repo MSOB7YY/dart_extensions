@@ -124,7 +124,8 @@ extension DEListieExt<E> on List<E> {
       });
 
   void sortByAlts(List<Comparable Function(E e)> alternatives) => sort((a, b) {
-        for (final alternative in alternatives) {
+        for (int i = 0; i < alternatives.length; i++) {
+          final alternative = alternatives[i];
           final compare = alternative(a).compareTo(alternative(b));
           if (compare != 0) return compare;
         }
@@ -132,7 +133,8 @@ extension DEListieExt<E> on List<E> {
       });
 
   void sortByReverseAlts(List<Comparable Function(E e)> alternatives) => sort((a, b) {
-        for (final alternative in alternatives) {
+        for (int i = 0; i < alternatives.length; i++) {
+          final alternative = alternatives[i];
           final compare = alternative(b).compareTo(alternative(a));
           if (compare != 0) return compare;
         }
