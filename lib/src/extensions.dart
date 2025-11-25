@@ -4,6 +4,7 @@ import 'dart:developer' as dev;
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
+
 import 'package:intl/intl.dart';
 
 extension DESecondsLabel on int {
@@ -159,7 +160,7 @@ extension DEIterableUtils<E> on Iterable<E> {
   E? get firstOrNull => isEmpty ? null : first;
   E? get lastOrNull => isEmpty ? null : last;
 
-  Iterable<E> withLimit([int? limit]) => limit != null ? take(limit) : this;
+  Iterable<E> withLimit([int? limit]) => limit != null && limit < length ? take(limit) : this;
 }
 
 extension DEExecuteIfBool on bool {
