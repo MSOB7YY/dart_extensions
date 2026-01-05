@@ -7,22 +7,30 @@ import 'package:flutter/foundation.dart';
 
 import 'package:intl/intl.dart';
 
+String _heyPad(int n) => n.toString().padLeft(2, "0");
+
 extension DESecondsLabel on int {
-  String get secondsLabel {
+  String get milliSecondsLabel {
     if (this == 0) return "00:00";
 
     final val = abs();
     final suffix = isNegative ? '-' : '';
 
-    String heyPad(int n) => n.toString().padLeft(2, "0");
-    final hours = val ~/ 3600;
-    final minutes = (val % 3600) ~/ 60;
-    final seconds = val % 60;
-    final durinHour = hours > 0 ? "${heyPad(hours)}:" : '';
-    return "$suffix$durinHour${heyPad(minutes)}:${heyPad(seconds)}";
+    final hours = val ~/ 3600000;
+    final minutes = (val % 3600000) ~/ 60000;
+    final seconds = (val % 60000) ~/ 1000;
+    final durinHour = hours > 0 ? "${_heyPad(hours)}:" : '';
+    return "$suffix$durinHour${_heyPad(minutes)}:${_heyPad(seconds)}";
   }
 
-  String get milliSecondsLabel => (this ~/ 1000).secondsLabel;
+  String get milliSecondsLabelWithCentiSeconds {
+    final msLabel = milliSecondsLabel;
+    final val = abs();
+    final centiseconds = (val % 1000) ~/ 10; // Convert ms to centiseconds
+    return "$msLabel.${_heyPad(centiseconds)}";
+  }
+
+  String get secondsLabel => (this * 1000).milliSecondsLabel;
 }
 
 extension DEIterables<E> on Iterable<E> {
