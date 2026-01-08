@@ -196,6 +196,7 @@ void printo(dynamic message, {bool printInDebugOnly = true, bool isError = false
     final infoMsg = isError ? '' : 'Info: $msgWithClass';
     final errorMsg = isError ? 'Error: $msgWithClass' : '';
     final color = dumpshit ? '\x1B[37m' : '';
-    dev.log('$color$infoMsg', error: errorMsg, name: 'Namida');
+    final stackTrace = isError ? '\n${StackTrace.current}' : '';
+    dev.log('$color$infoMsg$stackTrace', error: errorMsg, name: 'Namida');
   }
 }
