@@ -8,7 +8,12 @@ import 'package:string_clean_utils/string_clean_utils.dart';
 extension DEFileNameUtils on String {
   String get getFilename => p.basename(this);
   String get getFilenameWOExt => p.basenameWithoutExtension(this);
-  String get getExtension => p.extension(this).substring(1);
+  String get getExtension {
+    String ext = p.extension(this);
+    if (ext.isNotEmpty) ext = ext.substring(1);
+    return ext;
+  }
+
   String get getDirectoryName => p.dirname(this);
   String get getDirectoryPath => withoutLast(Platform.pathSeparator);
 }
