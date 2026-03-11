@@ -33,8 +33,8 @@ extension DEStringUtils on String {
   String get overflow => this != '' ? replaceAll(' ', '\u{200B} ') : '';
 
   String formatPath() {
-    String formatted = replaceFirst('/storage/', '/').replaceFirst('/emulated/0', 'main');
-    if (formatted[0] == '/') {
+    String formatted = replaceFirst('storage/emulated/0/', 'main/');
+    if (formatted.startsWith('/')) {
       formatted = formatted.substring(1);
     }
     return formatted;
