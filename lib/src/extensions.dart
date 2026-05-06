@@ -50,6 +50,11 @@ extension DEMSSEUtils on int? {
 
 extension DEDateTimeUtils on DateTime {
   int toDaysSince1970() => difference(DateTime(1970)).inDays;
+
+  String getYearFormatted([String? newPattern, String? locale]) => DateFormat(newPattern, locale).format(this);
+  String formatTimeFromDate(String format) => DateFormat(format).format(this);
+  String getDateFormatted(String format) => formatTimeFromDate(format);
+  String getClockFormatted(bool hourFormat12) => formatTimeFromDate(hourFormat12 ? 'hh:mm aa' : 'HH:mm');
 }
 
 extension DETotalTime on int {
@@ -100,17 +105,15 @@ extension DEYearDateFormatted on int {
 
     final parseResult = DateTime.tryParse(toString());
     if (parseResult != null) {
-      return DateFormat(newPattern, locale).format(parseResult);
+      return parseResult.getYearFormatted(newPattern, locale);
     }
 
     return toString();
   }
 
-  String formatTimeFromMSSE(String format) => DateFormat(format).format(DateTime.fromMillisecondsSinceEpoch(this));
-
-  String getDateFormatted({String format = 'dd MMM yyyy'}) => formatTimeFromMSSE(format);
-
-  String getClockFormatted(bool hourFormat12) => formatTimeFromMSSE(hourFormat12 ? 'hh:mm aa' : 'HH:mm');
+  String formatTimeFromMSSE(String format) => DateTime.fromMillisecondsSinceEpoch(this).formatTimeFromDate(format);
+  String getDateFormatted(String format) => DateTime.fromMillisecondsSinceEpoch(this).getDateFormatted(format);
+  String getClockFormatted(bool hourFormat12) => DateTime.fromMillisecondsSinceEpoch(this).getClockFormatted(hourFormat12);
 }
 
 extension DEFileSizeFormat on int {
