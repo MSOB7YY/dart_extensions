@@ -1,9 +1,10 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:benchmarking/benchmarking.dart';
-import 'package:dart_extensions/src/string_extensions.dart';
-import 'package:dart_extensions/src/list_extensions.dart';
 import 'package:test/test.dart';
+
+import 'package:dart_extensions/src/list_extensions.dart';
+import 'package:dart_extensions/src/string_extensions.dart';
 
 void main() {
   group('DEListieSizie', () {
@@ -91,5 +92,10 @@ void main() {
       syncBenchmark('old (last)', () => splittedoldlast = text.split(splitter).last).report();
       syncBenchmark('new (last)', () => splittednewlast = text.splitLast(splitter)).report();
     });
+  });
+  test('trimAll', () {
+    const kTextToClean = '   My Syrex  is   really    here  ';
+    const kTextCleaned = 'My Syrex is really here';
+    expect(kTextToClean.trimAll(), kTextCleaned);
   });
 }

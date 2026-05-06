@@ -18,13 +18,12 @@ extension DEFileNameUtils on String {
   String get getDirectoryPath => withoutLast(Platform.pathSeparator);
 }
 
+final _whitespaceRegex = RegExp(r'[\s]+');
+
 extension DEStringUtils on String {
   /// Trims a string and removes all extra white spaces.
   String trimAll() {
-    // second time ensures removing extra ones if number of white spaces is odd, for ex:
-    // 1. 'W...H' => 'W..H'
-    // 2. 'W..H' => 'W.H'
-    return replaceAll('  ', ' ').replaceAll('  ', ' ').trim();
+    return replaceAll(_whitespaceRegex, ' ').trim();
   }
 
   String addQuotation() => "'$this'";
