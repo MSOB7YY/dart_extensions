@@ -68,10 +68,7 @@ extension DEStringUtils on String {
     var currentCodes = <int>[];
     var currentTempSplitterCodes = <int>[];
     int currentSplitterIndex = 0;
-    final textCodeUnits = this.codeUnits;
-    final length = textCodeUnits.length;
-    for (int i = 0; i < length; i++) {
-      final codeUnit = textCodeUnits[i];
+    for (final codeUnit in this.codeUnits) {
       if (splitterCodes[currentSplitterIndex] == codeUnit) {
         // -- is splitter streak
         currentTempSplitterCodes.add(codeUnit);

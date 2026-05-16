@@ -15,17 +15,17 @@ extension DEListieExt<E> on List<E> {
 
   /// Simple for loop, alternative of [forEach] but doesnt check length with each iteration.
   void loop(void Function(E item) action) {
-    final int length = this.length;
-    for (int i = 0; i < length; i++) {
-      action(this[i]);
+    for (final e in this) {
+      action(e);
     }
   }
 
   /// Same as [loop] with additional index parameter.
   void loopAdv(void Function(E item, int index) action) {
-    final int length = this.length;
-    for (int i = 0; i < length; i++) {
-      action(this[i], i);
+    int index = 0;
+    for (final e in this) {
+      action(e, index);
+      index++;
     }
   }
 
@@ -68,14 +68,14 @@ extension DEListieExt<E> on List<E> {
 
   /// Replaces Single Item inside the list.
   void replaceSingleWhere(bool Function(E e) test, E Function(E old) newElement, {void Function()? onMatch}) {
-    final int length = this.length;
-    for (int i = 0; i < length; i++) {
-      final currentElement = this[i];
+    int index = 0;
+    for (final currentElement in this) {
       if (test(currentElement)) {
-        this[i] = newElement(currentElement);
+        this[index] = newElement(currentElement);
         if (onMatch != null) onMatch();
         break;
       }
+      index++;
     }
   }
 
@@ -91,14 +91,14 @@ extension DEListieExt<E> on List<E> {
 
   /// Replaces Single Item inside the list.
   void replaceItem(E oldElement, E newElement, {void Function()? onMatch}) {
-    final int length = this.length;
-    for (int i = 0; i < length; i++) {
-      final currentElement = this[i];
+    int index = 0;
+    for (final currentElement in this) {
       if (currentElement == oldElement) {
-        this[i] = newElement;
+        this[index] = newElement;
         if (onMatch != null) onMatch();
         break;
       }
+      index++;
     }
   }
 
@@ -124,8 +124,7 @@ extension DEListieExt<E> on List<E> {
       });
 
   void sortByAlts(List<Comparable Function(E e)> alternatives) => sort((a, b) {
-        for (int i = 0; i < alternatives.length; i++) {
-          final alternative = alternatives[i];
+        for (final alternative in alternatives) {
           final compare = alternative(a).compareTo(alternative(b));
           if (compare != 0) return compare;
         }
@@ -133,8 +132,7 @@ extension DEListieExt<E> on List<E> {
       });
 
   void sortByReverseAlts(List<Comparable Function(E e)> alternatives) => sort((a, b) {
-        for (int i = 0; i < alternatives.length; i++) {
-          final alternative = alternatives[i];
+        for (final alternative in alternatives) {
           final compare = alternative(b).compareTo(alternative(a));
           if (compare != 0) return compare;
         }
@@ -157,12 +155,12 @@ extension DEListieExt<E> on List<E> {
     if (q1.length != q2.length) {
       return false;
     }
-    final finalLength = q1.length > q2.length ? q2.length : q1.length;
-
-    for (int i = 0; i < finalLength; i++) {
-      if (q1[i] != q2[i]) {
+    int index = 0;
+    for (final e1 in q1) {
+      if (e1 != q2[index]) {
         return false;
       }
+      index++;
     }
     return true;
   }
@@ -246,9 +244,7 @@ extension DEListieExt<E> on List<E> {
 
   /// Efficient version of firstWhere()
   E? firstWhereEff(bool Function(E e) test, {E? fallback}) {
-    final int length = this.length;
-    for (int i = 0; i < length; i++) {
-      final element = this[i];
+    for (final element in this) {
       if (test(element)) {
         return element;
       }
@@ -408,8 +404,7 @@ extension DEListieSizie<N extends num> on List<N> {
     // -- Case 3
     else {
       // -- targetSize == list.length
-      for (int i = 0; i <= length - 1; i++) {
-        final value = this[i];
+      for (final value in this) {
         final toAdd = value * multiplier;
         finalList.add(toAdd);
         if (maxValue < toAdd) maxValue = toAdd;
