@@ -177,6 +177,8 @@ extension DEIterableUtils<E> on Iterable<E> {
   E? get lastOrNull => isEmpty ? null : last;
 
   Iterable<E> withLimit([int? limit]) => limit != null && limit < length ? take(limit) : this;
+
+  List<E> toFixedList() => toList(growable: false);
 }
 
 extension DEExecuteIfBool on bool {
