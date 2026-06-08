@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart_extensions/src/extensions.dart';
+import 'package:dart_extensions/src/extras.dart';
 import 'package:dart_extensions/src/list_extensions.dart';
 
 extension DEFileUtils<R> on File {
