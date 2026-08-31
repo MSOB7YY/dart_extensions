@@ -285,9 +285,6 @@ extension DEListieExt<E> on List<E> {
 
     list[newIndex] = temp;
   }
-
-  E? get firstOrNull => isEmpty ? null : this[0];
-  E? get lastOrNull => isEmpty ? null : this[length - 1];
 }
 
 extension DEListieEnum<E extends Enum> on List<E> {
