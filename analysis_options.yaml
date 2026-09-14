@@ -1,1 +1,4 @@
+analyzer:
+  errors:
+    unnecessary_this: ignore
 include: package:lints/recommended.yaml

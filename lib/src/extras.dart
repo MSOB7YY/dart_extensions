@@ -1,9 +1,8 @@
 import 'dart:developer' as dev;
 
-// ignore: depend_on_referenced_packages
-import 'package:flutter/foundation.dart' show kDebugMode;
-
 import 'package:intl/intl.dart';
+
+const _kDebugMode = !bool.fromEnvironment('dart.vm.product') && !bool.fromEnvironment('dart.vm.profile');
 
 final _date1970utc = DateTime.utc(1970);
 
@@ -91,7 +90,7 @@ extension DEPrintFunction on dynamic {
 
 /// logs the message only in Debug mode.
 void printo(dynamic message, {bool printInDebugOnly = true, bool isError = false, dynamic classScope, bool dumpshit = false}) {
-  if (kDebugMode && printInDebugOnly) {
+  if (_kDebugMode && printInDebugOnly) {
     final className = classScope ?? '';
     final isClassNameLong = className.toString().split('').length > 50;
     final msgWithClass = "[$className]: ${isClassNameLong ? '\n' : ''} $message";

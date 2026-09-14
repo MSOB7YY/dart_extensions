@@ -91,6 +91,15 @@ extension DEIterableUtils<E> on Iterable<E> {
   Iterable<E> withLimit([int? limit]) => limit != null && limit < length ? take(limit) : this;
 
   List<E> toFixedList() => toList(growable: false);
+
+  Iterable<E> addSeparators({required E separator, int skipFirst = 0}) sync* {
+    int count = 0;
+    for (final item in this) {
+      if (count >= skipFirst) yield separator;
+      yield item;
+      count++;
+    }
+  }
 }
 
 extension DEExecuteIfBool on bool {
