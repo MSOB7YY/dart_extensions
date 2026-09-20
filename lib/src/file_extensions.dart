@@ -1,10 +1,24 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dart_extensions/src/extensions.dart';
 import 'package:dart_extensions/src/extras.dart';
 import 'package:dart_extensions/src/list_extensions.dart';
+
+final _jsonUtf8Decoder = const Utf8Decoder().fuse(const JsonDecoder());
+final _jsonUtf8Encoder = JsonUtf8Encoder();
+final _jsonUtf8EncoderIndented = JsonUtf8Encoder("  ");
+
+/// parses utf8 json bytes directly, without building an intermediate string.
+dynamic jsonDecodeUtf8(List<int> bytes) => _jsonUtf8Decoder.convert(bytes);
+
+/// encodes to utf8 json bytes directly, without building an intermediate string.
+Uint8List jsonEncodeUtf8(Object? object) {
+  final bytes = _jsonUtf8Encoder.convert(object);
+  return bytes is Uint8List ? bytes : Uint8List.fromList(bytes);
+}
 
 extension DEFileUtils<R> on File {
   Future<T> executeAndKeepStats<T>(Future<T> Function() fn, {bool keepStats = true}) async {
@@ -95,9 +109,9 @@ extension DEFileUtils<R> on File {
         if (!await exists()) return null;
       }
 
-      final content = await readAsString();
-      if (content.isEmpty) return null;
-      return jsonDecode(content);
+      final bytes = await readAsBytes();
+      if (bytes.isEmpty) return null;
+      return _jsonUtf8Decoder.convert(bytes);
     } catch (e) {
       printy(e, isError: true);
       if (onError != null) onError();
@@ -115,9 +129,9 @@ extension DEFileUtils<R> on File {
       if (ensureExists) {
         if (!existsSync()) return null;
       }
-      final content = readAsStringSync();
-      if (content.isEmpty) return null;
-      return jsonDecode(content);
+      final bytes = readAsBytesSync();
+      if (bytes.isEmpty) return null;
+      return _jsonUtf8Decoder.convert(bytes);
     } catch (e) {
       printy(e, isError: true);
       if (onError != null) onError();
@@ -168,8 +182,7 @@ extension DEFileUtils<R> on File {
   Future<File?> writeAsJson(Object? object) async {
     try {
       await create(recursive: true);
-      const encoder = JsonEncoder.withIndent("  ");
-      return (await writeAsString(encoder.convert(object)));
+      return (await writeAsBytes(_jsonUtf8EncoderIndented.convert(object)));
     } catch (e) {
       printy(e, isError: true);
       return null;
@@ -179,8 +192,7 @@ extension DEFileUtils<R> on File {
   File? writeAsJsonSync(Object? object) {
     try {
       createSync(recursive: true);
-      const encoder = JsonEncoder.withIndent("  ");
-      writeAsStringSync(encoder.convert(object));
+      writeAsBytesSync(_jsonUtf8EncoderIndented.convert(object));
       return this;
     } catch (e) {
       printy(e, isError: true);
