@@ -57,12 +57,12 @@ extension DEFileUtils<R> on File {
 
   Future<bool> existsAndValid([int minValidSize = 3]) async {
     final st = await stat();
-    final doesExist = await exists();
-    return (doesExist && st.size >= minValidSize);
+    return st.type == FileSystemEntityType.file && st.size >= minValidSize;
   }
 
   bool existsAndValidSync([int minValidSize = 3]) {
-    return existsSync() && statSync().size >= minValidSize;
+    final st = statSync();
+    return st.type == FileSystemEntityType.file && st.size >= minValidSize;
   }
 
   /// returns [true] if deleted successfully. or [false] if failed.
