@@ -179,10 +179,10 @@ extension DEFileUtils<R> on File {
   /// Automatically creates the file if it doesnt exist
   ///
   /// Has a built-in try-catch that returns [File] if wrote successfully, or [null] if failed.
-  Future<File?> writeAsJson(Object? object) async {
+  Future<File?> writeAsJson(Object? object, {bool flush = false}) async {
     try {
       await create(recursive: true);
-      return (await writeAsBytes(_jsonUtf8EncoderIndented.convert(object)));
+      return (await writeAsBytes(_jsonUtf8EncoderIndented.convert(object), flush: flush));
     } catch (e) {
       printy(e, isError: true);
       return null;
