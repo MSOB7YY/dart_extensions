@@ -77,9 +77,31 @@ extension DEDisplayKeywords on int {
   }
 }
 
+final _decimalFormat = _LocaleNumberFormat(NumberFormat.decimalPattern);
+final _compactFormat = _LocaleNumberFormat((locale) => NumberFormat.compact(locale: locale));
+
 extension DEFormatNumber on int {
-  String formatDecimalShort([bool full = false]) => (full ? NumberFormat('#,###,###') : NumberFormat.compact()).format(this);
-  String formatDecimal() => NumberFormat('#,###,###').format(this);
+  String formatDecimalShort([bool full = false]) => full ? formatDecimal() : _compactFormat.format(this);
+  String formatDecimal() => _decimalFormat.format(this);
+}
+
+class _LocaleNumberFormat {
+  final NumberFormat Function(String locale) _create;
+  _LocaleNumberFormat(this._create);
+
+  String? _locale;
+  NumberFormat? _numberFormat;
+
+  String format(int number) {
+    final locale = Intl.getCurrentLocale();
+    var numberFormat = _numberFormat;
+    if (numberFormat == null || locale != _locale) {
+      numberFormat = _create(locale);
+      _numberFormat = numberFormat;
+      _locale = locale;
+    }
+    return numberFormat.format(number);
+  }
 }
 
 extension DEPrintFunction on dynamic {
