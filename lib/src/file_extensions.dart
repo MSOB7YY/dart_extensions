@@ -176,13 +176,33 @@ extension DEFileUtils<R> on File {
     return success;
   }
 
+  static const kAtomicTempSuffix = '.tmp';
+
+  /// Written to a [kAtomicTempSuffix] file then renamed over this one, so a kill midway keeps the old content whole.
+  /// Falls back to a direct write when the rename fails (ex: windows while the file is locked).
+  ///
   /// Automatically creates the file if it doesnt exist
   ///
   /// Has a built-in try-catch that returns [File] if wrote successfully, or [null] if failed.
   Future<File?> writeAsJson(Object? object, {bool flush = false}) async {
     try {
-      await create(recursive: true);
-      return (await writeAsBytes(_jsonUtf8EncoderIndented.convert(object), flush: flush));
+      final bytes = _jsonUtf8EncoderIndented.convert(object);
+      final tempFile = File('$path$kAtomicTempSuffix');
+      try {
+        await tempFile.writeAsBytes(bytes, flush: flush);
+      } on PathNotFoundException {
+        await tempFile.parent.create(recursive: true);
+        await tempFile.writeAsBytes(bytes, flush: flush);
+      }
+      try {
+        return await tempFile.rename(path);
+      } catch (_) {
+        try {
+          return await writeAsBytes(bytes, flush: flush);
+        } finally {
+          await tempFile.tryDeleting();
+        }
+      }
     } catch (e) {
       printy(e, isError: true);
       return null;
@@ -191,9 +211,26 @@ extension DEFileUtils<R> on File {
 
   File? writeAsJsonSync(Object? object) {
     try {
-      createSync(recursive: true);
-      writeAsBytesSync(_jsonUtf8EncoderIndented.convert(object));
-      return this;
+      final bytes = _jsonUtf8EncoderIndented.convert(object);
+      final tempFile = File('$path$kAtomicTempSuffix');
+      try {
+        tempFile.writeAsBytesSync(bytes);
+      } on PathNotFoundException {
+        tempFile.parent.createSync(recursive: true);
+        tempFile.writeAsBytesSync(bytes);
+      }
+      try {
+        return tempFile.renameSync(path);
+      } catch (_) {
+        try {
+          writeAsBytesSync(bytes);
+          return this;
+        } finally {
+          try {
+            tempFile.deleteSync();
+          } catch (_) {}
+        }
+      }
     } catch (e) {
       printy(e, isError: true);
       return null;
