@@ -176,17 +176,74 @@ extension DEFileUtils<R> on File {
     return success;
   }
 
-  static const kAtomicTempSuffix = '.tmp';
-
-  /// Written to a [kAtomicTempSuffix] file then renamed over this one, so a kill midway keeps the old content whole.
-  /// Falls back to a direct write when the rename fails (ex: windows while the file is locked).
-  ///
   /// Automatically creates the file if it doesnt exist
   ///
   /// Has a built-in try-catch that returns [File] if wrote successfully, or [null] if failed.
   Future<File?> writeAsJson(Object? object, {bool flush = false}) async {
     try {
+      await create(recursive: true);
+      return (await writeAsBytes(_jsonUtf8EncoderIndented.convert(object), flush: flush));
+    } catch (e) {
+      printy(e, isError: true);
+      return null;
+    }
+  }
+
+  File? writeAsJsonSync(Object? object) {
+    try {
+      createSync(recursive: true);
+      writeAsBytesSync(_jsonUtf8EncoderIndented.convert(object));
+      return this;
+    } catch (e) {
+      printy(e, isError: true);
+      return null;
+    }
+  }
+
+  static const kAtomicTempSuffix = '.tmp';
+
+  /// See [writeAsBytesAtomic].
+  Future<File?> writeAsJsonAtomic(Object? object, {bool flush = false}) async {
+    try {
       final bytes = _jsonUtf8EncoderIndented.convert(object);
+      return await writeAsBytesAtomic(bytes, flush: flush);
+    } catch (e) {
+      printy(e, isError: true);
+      return null;
+    }
+  }
+
+  /// See [writeAsBytesAtomicSync].
+  File? writeAsJsonAtomicSync(Object? object, {bool flush = false}) {
+    try {
+      final bytes = _jsonUtf8EncoderIndented.convert(object);
+      return writeAsBytesAtomicSync(bytes, flush: flush);
+    } catch (e) {
+      printy(e, isError: true);
+      return null;
+    }
+  }
+
+  /// See [writeAsBytesAtomic].
+  Future<File?> writeAsStringAtomic(String contents, {bool flush = false}) {
+    final bytes = utf8.encode(contents);
+    return writeAsBytesAtomic(bytes, flush: flush);
+  }
+
+  /// See [writeAsBytesAtomicSync].
+  File? writeAsStringAtomicSync(String contents, {bool flush = false}) {
+    final bytes = utf8.encode(contents);
+    return writeAsBytesAtomicSync(bytes, flush: flush);
+  }
+
+  /// Written to a [kAtomicTempSuffix] file then renamed over this one, so a kill midway keeps the old content whole.
+  /// Falls back to a direct write when the rename fails (ex: windows while the file is locked).
+  ///
+  /// Creates missing parent folders only when the write fails.
+  ///
+  /// Has a built-in try-catch that returns [File] if wrote successfully, or [null] if failed.
+  Future<File?> writeAsBytesAtomic(List<int> bytes, {bool flush = false}) async {
+    try {
       final tempFile = File('$path$kAtomicTempSuffix');
       try {
         await tempFile.writeAsBytes(bytes, flush: flush);
@@ -209,21 +266,21 @@ extension DEFileUtils<R> on File {
     }
   }
 
-  File? writeAsJsonSync(Object? object) {
+  /// Sync twin of [writeAsBytesAtomic].
+  File? writeAsBytesAtomicSync(List<int> bytes, {bool flush = false}) {
     try {
-      final bytes = _jsonUtf8EncoderIndented.convert(object);
       final tempFile = File('$path$kAtomicTempSuffix');
       try {
-        tempFile.writeAsBytesSync(bytes);
+        tempFile.writeAsBytesSync(bytes, flush: flush);
       } on PathNotFoundException {
         tempFile.parent.createSync(recursive: true);
-        tempFile.writeAsBytesSync(bytes);
+        tempFile.writeAsBytesSync(bytes, flush: flush);
       }
       try {
         return tempFile.renameSync(path);
       } catch (_) {
         try {
-          writeAsBytesSync(bytes);
+          writeAsBytesSync(bytes, flush: flush);
           return this;
         } finally {
           try {
@@ -234,6 +291,26 @@ extension DEFileUtils<R> on File {
     } catch (e) {
       printy(e, isError: true);
       return null;
+    }
+  }
+}
+
+extension DEDirectoryUtils on Directory {
+  /// Files of this directory, without the leftover [DEFileUtils.kAtomicTempSuffix] files of the atomic writers (ex: [DEFileUtils.writeAsJsonAtomic]).
+  ///
+  /// Errors are skipped, so a failing entry doesn't stop the rest.
+  Stream<File> listFilesWithoutAtomicTemps() {
+    return list().where((e) => e is File && !e.path.endsWith(DEFileUtils.kAtomicTempSuffix)).cast<File>().handleError((_) {});
+  }
+
+  /// Sync twin of [listFilesWithoutAtomicTemps].
+  ///
+  /// Has a built-in try-catch that returns an empty list if listing failed.
+  List<File> listFilesWithoutAtomicTempsSync() {
+    try {
+      return listSync().whereType<File>().where((f) => !f.path.endsWith(DEFileUtils.kAtomicTempSuffix)).toList();
+    } catch (_) {
+      return [];
     }
   }
 }
